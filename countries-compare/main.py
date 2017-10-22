@@ -2,22 +2,21 @@
 Run in background with Python 3.5 or higher; uses Bokeh 0.12.10 installed.
 Bokeh server defaults to running on port 5006:
 
-    $ bokeh serve countries-plot  --allow-websocket-origin=10.80.98.120:5006 &!
+    $ bokeh serve countries-plot
 
 Run on alternate port if 5006 is in use:
 
-    $ bokeh serve countries-plot --port 5007 --allow-websocket-origin=10.80.98.120:5007 &!
+    $ bokeh serve countries-plot --port 5007
 """
 
 from os.path import dirname, join
-from country_data import fill_data_frame
-from plot_options import apply_plot_options
-
 from bokeh.plotting import figure
 from bokeh.layouts import layout, widgetbox
 from bokeh.models import ColumnDataSource, HoverTool, Div
 from bokeh.models.widgets import Select
 from bokeh.io import curdoc
+from country_data import fill_data_frame
+from plot_options import apply_plot_options
 
 world = fill_data_frame()
 
@@ -30,8 +29,7 @@ axis_map = {
 
 # Create Input controls
 ctry_selec = Select(title="Country",
-                    options=sorted(set(world.country.values)),
-                    value='All')
+                    options=sorted(set(world.country.values)), value='All')
 regn_selec = Select(title="Region",
                     options=sorted(set(world.region.values)), value='All')
 cont_selec = Select(title="Continent",
@@ -71,10 +69,13 @@ apply_plot_options(f)
 def select_countries():
 
     selec = world.copy()
+
+    # default color is grey with very light alpha
+    selec['color'] = 'grey' 
+    selec['alpha'] = 0.25
+
+    # selected points will be full-alpha purple
     selec_col = 'purple'; selec_alpha = 1.0
-    unselec_col = 'grey'; unselec_alpha = 0.25
-    selec['color'] = unselec_col
-    selec['alpha'] = unselec_alpha
 
     if ctry_selec.value != 'All':
         ctry = selec.loc[ selec.country==ctry_selec.value ].copy()
