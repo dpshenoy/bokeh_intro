@@ -1,5 +1,12 @@
 """
-Module to query DB data into a Pandas DataFrame.
+Module to query DB data into a Pandas DataFrame.  The data are read from a
+Postgres DB running locally.  The DB is the "world" DB from pgFoundry:
+
+    http://pgfoundry.org/frs/?group_id=1000150&release_id=366#world-world-1.0-title-content
+
+Before importing the DB, I added a schema called "world" (since this DB was
+originally a MySQL DB, the tables were not inside a schema.)
+
 """
 import numpy as np
 import pandas as pd
@@ -28,7 +35,7 @@ def fill_data_frame():
     world = pd.read_sql(query, connection)
     connection.close()
 
-    # convert gnp to dollars (it APPEARS to be in millions of dollars...)
+    # convert gnp to dollars (it appears to be in millions of dollars...)
     world['gnp'] *= 1.e6
 
     # add column for per-capital gross national product column
